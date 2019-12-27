@@ -31,7 +31,6 @@ public class MainActivity extends AppCompatActivity {
     private final String TAG = MainActivity.class.getSimpleName();
 
     private AdView mAdView;
-    private FrameLayout adContainer;
     private ConsentForm form;
 
     @Override
@@ -42,22 +41,9 @@ public class MainActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        adContainer = findViewById(R.id.adContainer);
-        mAdView = new AdView(this);
+        mAdView = findViewById(R.id.mainFooterAd);	
         getConsentStatus();
 
-        mAdView.setAdListener(new AdListener() {
-            @Override
-            public void onAdLoaded() {
-                Log.d(TAG, "Ad loaded");
-                adContainer.setVisibility(View.VISIBLE);
-            }
-            @Override
-            public void onAdFailedToLoad(int errorCode) {
-                Log.d(TAG, "Ad failed to load, error code: " + errorCode);
-                adContainer.setVisibility(View.GONE);
-            }
-        });
     }
 
 
@@ -96,7 +82,6 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onFailedToUpdateConsentInfo(String errorDescription) {
                 // User's consent status failed to update.
-                adContainer.setVisibility(View.GONE);
             }
         });
     }
@@ -149,11 +134,9 @@ public class MainActivity extends AppCompatActivity {
      * @param isPersonalized true if the ad should be personalized
      */
     private void initializeAds(boolean isPersonalized) {
-        try {
             MobileAds.initialize(this, "App ID");
-            mAdView.setAdUnitId("Ad Unit"); // this is the adMob sample ID for a banner 
+            mAdView.setAdUnitId("Ad Unit"); 
             mAdView.setAdSize(AdSize.BANNER);
-            adContainer.addView(mAdView);
 
             // this is the part you need to add/modify on your code
             AdRequest adRequest;
@@ -168,10 +151,6 @@ public class MainActivity extends AppCompatActivity {
             }
             
             mAdView.loadAd(adRequest);
-            
-        } catch (IllegalArgumentException | IllegalStateException e) {
-            Log.e(TAG, "Error loading adview", e);
-        }
     }
 
 

@@ -16,7 +16,6 @@ class MainActivity : AppCompatActivity() {
 
     private val TAG = MainActivity::class.java.simpleName
     private lateinit var mAdView: AdView
-    private lateinit var adContainer: FrameLayout
     private lateinit var form: ConsentForm
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,8 +25,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar)
 
-        adContainer = findViewById(R.id.adContainer)
-        mAdView = AdView(this)
+        mAdView = findViewById(R.id.mainFooterAd)
 
         getConsentStatus()
     }
@@ -52,7 +50,7 @@ class MainActivity : AppCompatActivity() {
                         ConsentStatus.NON_PERSONALIZED -> initializeAds(false)
                     }
                 } else {
-                    Log.d(TAG, "Not in EU, displaying normal ads")
+                    Log.d(TAG, "Not in EU, displaying personalized ads")
                     // Note: You could technically put the if-else inside the UNKNOWN switch, however, if a user leaves the EU, they won't be put back into personalized advertising 
                     initializeAds(true)
                 }
@@ -110,11 +108,9 @@ class MainActivity : AppCompatActivity() {
      * @param isPersonalized true if the ad should be personalized
      */
     private fun initializeAds(isPersonalized: Boolean) {
-        try {
             MobileAds.initialize(this, "App ID")
             mAdView.adUnitId = "Ad Unit" 
             mAdView.adSize = AdSize.BANNER
-            adContainer.addView(mAdView)
 
             // this is the part you need to add/modify on your code
             val adRequest = if (isPersonalized) {
@@ -128,11 +124,5 @@ class MainActivity : AppCompatActivity() {
             }
 
             mAdView.loadAd(adRequest)
-
-        } catch (e: IllegalArgumentException) {
-            Log.e(TAG, "Error loading adview", e)
-        } catch (e: IllegalStateException) {
-            Log.e(TAG, "Error loading adview", e)
-        }
     }
 }
